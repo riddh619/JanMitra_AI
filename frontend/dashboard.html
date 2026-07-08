@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MP Decision Dashboard - JanMitra AI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-title">
+        <span>📢</span> JanMitra AI
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="citizen.html" class="nav-link">Citizen Portal</a></li>
+        <li><a href="dashboard.html" class="nav-link active">MP Dashboard</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Dashboard Layout -->
+  <main class="dashboard-layout">
+    
+    <!-- Sidebar Filters -->
+    <aside class="dashboard-sidebar">
+      <div>
+        <h3 class="sidebar-title">Constituency Filters</h3>
+        
+        <!-- Village Filter -->
+        <div class="filter-group" style="margin-bottom: 20px;">
+          <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">Village</label>
+          <select id="filter-village" class="filter-select">
+            <option value="all">All Villages (30)</option>
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="filter-group">
+          <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">Category</label>
+          <select id="filter-category" class="filter-select">
+            <option value="all">All Categories</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Roads">Roads & Connectivity</option>
+            <option value="Water Supply">Water Supply</option>
+            <option value="Education">Education</option>
+            <option value="Electricity">Electricity & Sanitation</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action logs / statistics -->
+      <div class="stats-mini">
+        <h3 class="sidebar-title">Evidence Insights</h3>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <strong>PHC Isolation Gaps:</strong>
+            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+              <span>No PHC in Village</span>
+              <span style="color: var(--priority-high-text); font-weight: bold;" id="insights-no-phc">8</span>
+            </div>
+          </div>
+          <div>
+            <strong>Water Concerns:</strong>
+            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+              <span>Contaminated / Dried</span>
+              <span style="color: var(--priority-medium-text); font-weight: bold;" id="insights-water-poor">6</span>
+            </div>
+          </div>
+          <div>
+            <strong>Education Accessibility:</strong>
+            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+              <span>No School in Village</span>
+              <span style="color: var(--color-primary); font-weight: bold;" id="insights-no-school">5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <section class="dashboard-main">
+      
+      <!-- Top KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Total Submissions</span>
+          <span class="kpi-value" id="kpi-total">0</span>
+          <span class="kpi-subtext">Active citizen requests</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">High Priority Queue</span>
+          <span class="kpi-value" id="kpi-high" style="color: var(--priority-high-text);">0</span>
+          <span class="kpi-subtext">Urgent action needed</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Villages Covered</span>
+          <span class="kpi-value" id="kpi-villages">0</span>
+          <span class="kpi-subtext">Unique village sources</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Sanctioned Allocations</span>
+          <span class="kpi-value" id="kpi-actioned" style="color: var(--priority-low-text);">0</span>
+          <span class="kpi-subtext">Resolutions initiated</span>
+        </div>
+      </div>
+
+      <!-- Workspace grid -->
+      <div class="dashboard-workspace">
+        
+        <!-- Left Side: Ranked Priorities List -->
+        <div class="priorities-list-wrapper">
+          <div class="list-header">
+            <h2 class="list-title">Ranked Development Priorities</h2>
+            <div class="search-bar">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" class="search-input" placeholder="Search keywords...">
+            </div>
+          </div>
+
+          <!-- Cards container -->
+          <div class="priorities-container" id="priorities-list">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- Right Side: Detail Panel -->
+        <div class="detail-panel" id="detail-panel">
+          <!-- Placeholder shown before card selection -->
+          <div class="detail-placeholder" id="detail-placeholder">
+            <div class="placeholder-icon">📋</div>
+            <h3>No Priority Selected</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 300px; margin: 8px auto 0 auto;">
+              Select an item from the ranked list to inspect the AI justification, Census evidence, and recommended action.
+            </p>
+          </div>
+
+          <!-- Content populated via JS on selection -->
+          <div class="detail-view" id="detail-view" style="display: none;">
+            
+            <!-- Panel Header -->
+            <div class="detail-header">
+              <div class="detail-tag-row">
+                <span class="card-category" id="detail-category">Healthcare</span>
+                <span class="badge" id="detail-priority-badge">High Priority</span>
+              </div>
+              <h2 class="detail-heading" id="detail-heading">Establish PHC in Kalyanpur</h2>
+              <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;" id="detail-meta">
+                Submitted by: Ramesh Prasad | Village: Kalyanpur | 2 hours ago
+              </p>
+            </div>
+
+            <!-- AI Executive Summary -->
+            <div>
+              <h4 class="detail-section-title">AI Summary & Justification</h4>
+              <p style="font-size: 0.95rem; color: var(--text-primary); line-height: 1.5;" id="detail-summary">
+                Critical health corridor deficiency detected. Welfare impact involves establishing health services for 22,000 residents isolated by more than 21km.
+              </p>
+            </div>
+
+            <!-- Citizen Original Demand -->
+            <div>
+              <h4 class="detail-section-title">Citizen Suggestion Input</h4>
+              <div class="detail-original" id="detail-original-text">
+                "Our village has 22,000 residents but the nearest clinic is 21 kilometers away..."
+              </div>
+              <div id="detail-image-box" style="margin-top: 12px; display: none;">
+                <img id="detail-image" src="" alt="Citizen attachment" style="max-width: 100%; max-height: 250px; border-radius: var(--radius-md); object-fit: contain; border: 1px solid var(--border-color);">
+              </div>
+            </div>
+
+            <!-- Grounding Census 2011 Data -->
+            <div>
+              <h4 class="detail-section-title">Census 2011 Grounding Facts</h4>
+              <div class="census-grid">
+                <div class="census-stat-card">
+                  <div class="census-stat-label">Village Population</div>
+                  <div class="census-stat-value" id="census-pop">22,000</div>
+                </div>
+                <div class="census-stat-card">
+                  <div class="census-stat-label">Existing PHCs</div>
+                  <div class="census-stat-value" id="census-phc">0</div>
+                </div>
+                <div class="census-stat-card">
+                  <div class="census-stat-label">Road Condition</div>
+                  <div class="census-stat-value" id="census-roads">Poor</div>
+                </div>
+                <div class="census-stat-card">
+                  <div class="census-stat-label">Drinking Water</div>
+                  <div class="census-stat-value" id="census-water">Fair</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Urgency score parameters -->
+            <div>
+              <h4 class="detail-section-title">Priority Score Breakdown (<span id="detail-score-title">97/100</span>)</h4>
+              <ul class="score-breakdown-list" id="detail-score-list">
+                <li>✔ Population Impact: +17 pts</li>
+                <li>✔ Critical Infrastructure Gap: +20 pts</li>
+                <li>✔ Extreme Remoteness: +15 pts</li>
+              </ul>
+            </div>
+
+            <!-- Suggested action card -->
+            <div>
+              <h4 class="detail-section-title">Suggested MP Action</h4>
+              <div class="action-card">
+                <p id="detail-action">
+                  Direct District Health Officer to issue a feasibility report and allocate initial area funds.
+                </p>
+              </div>
+            </div>
+
+            <!-- Interactivity buttons -->
+            <div style="display: flex; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+              <button class="btn btn-primary" id="btn-sanction" style="flex: 1;">
+                <span>⚖️</span> Sanction Allocation
+              </button>
+              <button class="btn btn-secondary" id="btn-survey">
+                <span>📍</span> Dispatch Site Survey
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <p>&copy; 2026 JanMitra AI. Built for the <strong>Build with AI: Code for Communities</strong> Hackathon.</p>
+        <p>Team: <strong>Gangs of Bangalore</strong> (Riddhiman)</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "name": "janmitra-ai",
+  "version": "1.0.0",
+  "description": "Root configuration for JanMitra AI",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend"
+  }
+}

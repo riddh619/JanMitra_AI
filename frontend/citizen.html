@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Intake Portal - JanMitra AI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-title">
+        <span>📢</span> JanMitra AI
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="citizen.html" class="nav-link active">Citizen Portal</a></li>
+        <li><a href="dashboard.html" class="nav-link">MP Dashboard</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Intake Layout -->
+  <main class="container">
+    <div class="form-layout">
+      
+      <!-- Intake Form Card -->
+      <section class="form-card">
+        <h2 style="margin-bottom: 8px; font-size: 1.75rem;">Submit Development Suggestion</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 30px;">
+          Share what your village needs. Your suggestion will be processed by our Agentic AI and cross-referenced with Census data for the MP's office to review.
+        </p>
+
+        <form id="citizen-form">
+          <!-- Citizen Name (Optional) -->
+          <div class="form-group">
+            <label for="citizen-name">Your Name (Optional)</label>
+            <input type="text" id="citizen-name" placeholder="e.g. Ramesh Prasad" autocomplete="name">
+          </div>
+
+          <!-- Village Dropdown -->
+          <div class="form-group">
+            <label for="village-select">Select Village / Constituency *</label>
+            <select id="village-select" required>
+              <option value="" disabled selected>Select your village...</option>
+              <!-- Populated via JS -->
+            </select>
+          </div>
+
+          <!-- Category Selection -->
+          <div class="form-group">
+            <label for="category-select">Development Category *</label>
+            <select id="category-select" required>
+              <option value="" disabled selected>Select category...</option>
+              <option value="Healthcare">Healthcare (PHCs, clinics, doctors)</option>
+              <option value="Roads">Roads & Connectivity (roads, bridges, buses)</option>
+              <option value="Water Supply">Water Supply (tap water, wells, purification)</option>
+              <option value="Education">Education (primary schools, high schools, teachers)</option>
+              <option value="Electricity">Electricity & Sanitation (grids, toilets, sewage)</option>
+            </select>
+          </div>
+
+          <!-- Suggestion details -->
+          <div class="form-group">
+            <label for="suggestion-text">What does your village need? *</label>
+            <textarea id="suggestion-text" placeholder="Please describe the issue in detail. E.g., 'We have no doctor or clinic in Rampur. A pregnant woman had to travel 16km on a cot last week...'" required></textarea>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="form-group">
+            <label>Upload Supporting Photo (Optional)</label>
+            <div class="upload-container" id="drop-zone">
+              <input type="file" id="file-input" accept="image/*" style="display: none;">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Click to upload or drag & drop image here</div>
+              <div class="upload-subtext">JPG, PNG up to 5MB</div>
+            </div>
+            <div class="preview-container" id="preview-box">
+              <img id="image-preview" src="" alt="Submission Preview">
+              <button type="button" class="remove-img-btn" id="remove-img-btn">&times;</button>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1rem; margin-top: 10px;">
+            Submit Suggestion to AI Pipeline 🚀
+          </button>
+        </form>
+      </section>
+
+      <!-- Sidebar Information -->
+      <aside class="info-sidebar">
+        <div class="info-box">
+          <h3><span>🛡️</span> Data Grounded Verification</h3>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 14px;">
+            Unlike simple suggestions boxes that gather dust, your voice is backed by facts:
+          </p>
+          <ul>
+            <li>Verifies village population demographics.</li>
+            <li>Identifies actual facility deficits in Census 2011 records.</li>
+            <li>Clusters with other suggestions to highlight community-wide crises.</li>
+          </ul>
+        </div>
+
+        <div class="info-box" style="background-color: var(--bg-secondary);">
+          <h3><span>⚙️</span> The Agentic Pipeline</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5;">
+            Upon clicking submit, a sequential multi-agent orchestration runs:
+          </p>
+          <ol style="margin-left: 20px; margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+            <li><strong>Classification Tool</strong> maps the category and intent.</li>
+            <li><strong>Census Retrieval Tool</strong> pulls physical infrastructure rows via Pandas.</li>
+            <li><strong>Duplicate Checker</strong> groups similar constituency logs.</li>
+            <li><strong>Impact & Priority Scorer</strong> computes the urgency index.</li>
+            <li><strong>MP Dashboard</strong> registers the ranked recommendation.</li>
+          </ol>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Agentic Pipeline Processing Overlay -->
+  <div class="agent-modal" id="pipeline-modal">
+    <div class="agent-content">
+      
+      <!-- Stepper Header -->
+      <div class="pipeline-header">
+        <h3 class="pipeline-title">Triggering AI Agent Pipeline</h3>
+        <p class="pipeline-subtitle">Orchestrating specialized decision tools in sequence...</p>
+      </div>
+
+      <!-- Stepper Visualizer -->
+      <div class="pipeline-steps">
+        <div class="step-node active" id="step-classify">
+          <div class="step-icon">1</div>
+          <div class="step-label">Classify</div>
+        </div>
+        <div class="step-node" id="step-retrieve">
+          <div class="step-icon">2</div>
+          <div class="step-label">Retrieve</div>
+        </div>
+        <div class="step-node" id="step-cluster">
+          <div class="step-icon">3</div>
+          <div class="step-label">Cluster</div>
+        </div>
+        <div class="step-node" id="step-score">
+          <div class="step-icon">4</div>
+          <div class="step-label">Score</div>
+        </div>
+        <div class="step-node" id="step-generate">
+          <div class="step-icon">5</div>
+          <div class="step-label">Publish</div>
+        </div>
+      </div>
+
+      <!-- Live Tool Output Logs -->
+      <div class="agent-console" id="console-logs">
+        <!-- Lines added dynamically -->
+      </div>
+
+      <!-- Success Screen (Shown at the end) -->
+      <div class="pipeline-success" id="pipeline-success">
+        <div class="success-badge">✔</div>
+        <h4 style="font-size: 1.35rem; margin-bottom: 8px; color: var(--text-primary);">Processing Complete!</h4>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px;" id="success-summary">
+          Your suggestion has been analyzed and successfully ranked with a Priority Score of <strong>84/100</strong>.
+        </p>
+        <button type="button" class="btn btn-primary" id="dashboard-redirect-btn">
+          View on MP Dashboard 📊
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <p>&copy; 2026 JanMitra AI. Built for the <strong>Build with AI: Code for Communities</strong> Hackathon.</p>
+        <p>Team: <strong>Gangs of Bangalore</strong> (Riddhiman)</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/citizen.js"></script>
+</body>
+</html>
